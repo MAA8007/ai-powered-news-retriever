@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}News Aggregator{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100;0,200;0,400;1,100;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700&family=Work+Sans:wght@100;300&display=swap" rel="stylesheet">
+    <style>
+        
+        * {
+            font-family: Montserrat;
+            font-weight: 200;
+        }
+
+        body{
+            background-color: black;
+            
+
+        }
+        .navbar {
+    margin-bottom: 0.1px;
+    background-color: black;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: Montserrat;
+    font-weight: 200;
+    /* align to the center */   
+   
+
+
+
+}
+
+.navbar a {
+    color: white;
+    transition: color 0.3s ease;
+    font-family: Montserrat;
+    font-weight: 200;
+    
+}
+
+.navbar a:hover {
+    color: #ccc;
+    font-family: Montserrat;
+    font-weight: 200;
+}
+
+/* Dropdown Hover */
+.nav-item.dropdown {
+    position: relative;
+    font-family: Montserrat;
+    font-family: Montserrat;
+    font-weight: 200;
+
+}
+
+.dropdown-menu {
+    background-color: black;
+    font-family: Montserrat;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: block; /* Ensure the dropdown menu is always present but hidden by default */
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    font-family: Montserrat;
+    font-weight: 200;
+    min-width: 10rem;
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    font-family: Montserrat;
+    font-weight: 200;
+}
+
+.dropdown-item {
+    color: white;
+    font-family: Montserrat;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: Montserrat;
+    font-weight: 200;
+}
+
+.dropdown-item:hover {
+    color: rgb(45, 45, 45);
+}
+
+
+.dropdown-menu {
+    background-color: black;
+    font-family: Montserrat;
+    font-weight: 200;
+}
+
+.dropdown-item:hover{
+    background-color: black;
+}
+
+        /* Chatbot CSS */
+        #chat-bot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99999999999999999;
+            height: auto;
+            float: right;
+        }
+        #chat-bot .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    color: #ffffff;
+    background-color: white;
+    width: 50px;
+    height: 50px;
+    float: right;
+    border-radius: 1000px;
+    padding: 10px 15px;
+    transition: 0.3s all;
+    overflow: hidden;
+    background-image: url('https://static.vecteezy.com/system/resources/previews/009/971/217/original/chat-bot-icon-isolated-contour-symbol-illustration-vector.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+
+        #chat-bot .icon .user {
+            visibility: hidden;
+            margin-left: -100px;
+        }
+        #chat-bot .icon.expanded {
+            width: 270px;
+            justify-content: space-between;
+        }
+        #chat-bot .messenger.expanded {
+            visibility: visible;
+            height: 389px;
+            width: 270px;
+        }
+        #chat-bot .icon.expanded .user {
+            visibility: visible;
+            margin-left: 0;
+            transition: 0.5s;
+        }
+
+        #chat-bot .messenger {
+            background-color: #ffffff;
+            border: 1px solid #0f513238;
+            padding: 10px;
+            margin-bottom: 10px;
+            height: 390px;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: height 0.7s;
+            width: 0;
+            height: 0;
+            visibility: hidden;
+        }
+        #chat-bot .chatroom {
+            height: 290px;
+            overflow-y: scroll;
+            display: flex;
+            flex-direction: column;
+            touch-action: pan-y;
+        }
+        #chat-bot .chatroom::-webkit-scrollbar {
+            display: none;
+        }
+        #chat-bot .type-area input.typing {
+            width: 100%;
+            outline: none !important;
+            border: 1px solid rgb(227 230 234);
+            border-radius: 5px;
+            padding: 8px 40px 8px 14px;
+            height: 40px;
+            font-size: 12px;
+        }
+        #chat-bot .type-area {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 12px rgba(254, 254, 254, 0.03);
+            margin-top: 10px;
+        }
+        #chat-bot .type-area span.send {
+            position: absolute;
+            right: 14px;
+            top: 9px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        #chat-bot .msg {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            font-size: 15px;
+            font-weight: bold;
+            color: #000000;
+        }
+        #chat-bot .msg .bubble {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ffffff;
+        }
+        #chat-bot .msg.msg-right .bubble {
+            color: rgb(0, 0, 0);
+            background-color: rgb(209 231 221);
+        }
+        #chat-bot .msg .bubble .name {
+            color: #000000;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .msg.msg-left {
+            align-items: flex-start;
+        }
+        .msg.msg-right {
+            align-items: flex-end;
+        }
+        #chat-bot .timestamp {
+            font-size: 12px;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .dropdown-item {
+            font-family: Montserrat;
+    font-weight: 200;
+            color: white;
+        }
+        .dropdown-menu {
+            background-color: black;
+            font-family: Montserrat;
+    font-weight: 200;
+        }
+
+        footer {
+            background-color: black;
+            height: 8pc;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        footer a {
+            color: white;
+        }
+
+        footer a:hover {
+            color: rgb(119, 119, 119);
+        }
+
+        .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+    
+    
+
+
+
+
+     @media only screen and (max-width: 768px) {
+        .navbar-collapse {
+    max-height: 0; /* Start with no height */
+    overflow: hidden; /* Hide overflow */
+    opacity: 0; /* Start fully transparent */
+    transition: max-height 0.5s ease, opacity 0.5s ease; /* Smooth transition for height and opacity */
+    display: block; /* Ensure it's part of the document flow but invisible */
+}
+
+.navbar-collapse.show {
+    max-height: 500px; /* Set to a reasonable max-height when shown */
+    opacity: 1; /* Fully opaque */
+}
+
+.nav-item .dropdown-menu {
+    max-height: 0; /* Start with no height */
+    overflow: hidden; /* Hide overflow */
+    opacity: 0; /* Start fully transparent */
+    transition: max-height 0.5s ease, opacity 0.5s ease; /* Smooth transition for height and opacity */
+    display: block; /* Ensure it's part of the document flow but invisible */
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item.show .dropdown-menu {
+    max-height: 300px; /* Set to a reasonable max-height when shown */
+    opacity: 1; /* Fully opaque */
+}
+
+
+
+
+    #chat-bot .messenger {
+        width: 100%;
+        right: 0;
+        bottom: 70px;
+    }
+
+    footer {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+</style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">News Aggregator</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Categories
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                            {% for category in categories %}
+                            <a class="dropdown-item" href="{% url 'category_page' category %}">{{ category }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <!-- World News Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="worldNewsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            World News
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="worldNewsDropdown">
+                            {% for website in categories_with_websites.World_News %}
+                            <a class="dropdown-item" href="{% url 'website_page' website %}">{{ website }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="worldNewsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Business & Finance
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="worldNewsDropdown">
+                            {% for website in categories_with_websites.Finance %}
+                            <a class="dropdown-item" href="{% url 'website_page' website %}">{{ website }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                
+                    <!-- Sports Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="sportsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Sports
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="sportsDropdown">
+                            {% for website in categories_with_websites.Sports %}
+                            <a class="dropdown-item" href="{% url 'website_page' website %}">{{ website }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                
+                    <!-- Science Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="scienceDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Science
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="scienceDropdown">
+                            {% for website in categories_with_websites.Science %}
+                            <a class="dropdown-item" href="{% url 'website_page' website %}">{{ website }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                
+                    <!-- Lifestyle Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="lifestyleDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Lifestyle
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="lifestyleDropdown">
+                            {% for website in categories_with_websites.Lifestyle %}
+                            <a class="dropdown-item" href="{% url 'website_page' website %}">{{ website }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'bookmark_list' %}">My Bookmarks</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                
+            </div>
+        </div>
+    </nav>
+    
+    
+
+    {% block content %}
+    <!-- Your content goes here -->
+    {% endblock %}
+
+    <!-- Chatbot -->
+    <div id="chat-bot">
+        <div class="messenger br10">
+            <div class="chatroom" id="chatroom">
+                <!-- Initial messages -->
+                <div class="msg msg-left">
+                    <div class="bubble">
+                        <h6 class="name">AI</h6>
+                        Hello, how can I help you?
+                    </div>
+                </div>
+            </div>
+            <div class="type-area">
+                <input type="text" class="typing" id="user-input" placeholder="Type Here...">
+                <span class="send" id="send-btn">
+                    <i class="bi bi-arrow-return-left"></i>
+                </span>
+            </div>
+        </div>
+        <div class="icon">
+             
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background-color: black; height: 8pc; display: flex; align-items: center; " class="">
+        <div class="container">
+            <p class="m-0 text-center text-white">Copyright &copy; Muhammad Arsalan Amjad 2024</p>
+            <a class="nav-link" href="{% url 'manage' %}">Manage</a>
+        </div>
+        <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const chat_btn = $("#chat-bot .icon");
+        const chat_box = $("#chat-bot .messenger");
+        const send_btn = $("#send-btn");
+        const user_input = $("#user-input");
+        const chatroom = $("#chatroom");
+
+        chat_btn.click(() => {
+            chat_btn.toggleClass("expanded");
+            setTimeout(() => {
+                chat_box.toggleClass("expanded");
+            }, 100);
+        });
+
+        send_btn.click(() => {
+            sendMessage();
+        });
+
+        user_input.keypress((e) => {
+            if (e.which == 13) { // Enter key pressed
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const message = user_input.val();
+            if (message.trim() === "") return;
+
+            // Display the user's message in the chatroom
+            chatroom.append(`
+                <div class="msg msg-right">
+                    <div class="bubble">${message}</div>
+                </div>
+            `);
+
+            user_input.val(''); // Clear the input
+
+            // Send the message to the server via AJAX
+            $.ajax({
+                url: "{% url 'chat_with_bot' %}", // Django view URL
+                type: "POST",
+                data: {
+                    query: message,
+                    csrfmiddlewaretoken: '{{ csrf_token }}' // Ensure CSRF token is included
+                },
+                success: function(data) {
+                    // Display the bot's response in the chatroom
+                    chatroom.append(`
+                        <div class="msg msg-left">
+                            <div class="bubble">
+                                <h6 class="name">AI</h6>
+                                ${data.response}
+                            </div>
+                        </div>
+                    `);
+                    chatroom.scrollTop(chatroom[0].scrollHeight); // Scroll to the bottom
+                },
+                error: function(xhr, errmsg, err) {
+                    console.log("An error occurred: " + errmsg);
+                }
+            });
+        }
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

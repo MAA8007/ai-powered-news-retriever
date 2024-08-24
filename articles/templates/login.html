@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+<style>
+    * {
+        color: white;
+    }
+
+    body, html {
+        height: 100%;
+        margin: 0;
+        background-color: #000000; /* Optional background color */
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(0, 0, 0);
+        padding: 2rem;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    form {
+        width: 100%;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        background-color: #242424;
+        padding: 10px;
+    }
+
+    form button {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #bbbbbb;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        color: #282c34;
+        transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+        background-color: #21a1f1;
+    }
+
+    p {
+        margin-top: 15px;
+    }
+
+    a {
+        color: #61dafb;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="form-container">
+    <h2>Login</h2>
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
+</div>
+
+{% endblock %}

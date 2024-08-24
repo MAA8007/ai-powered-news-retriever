@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}
+Welcome to My Django Site
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Reset CSS */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+#welcome {
+    background-color: #000000;
+    color: white;
+    font-size: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+#welcome .text-overlay {
+    width: 100%;
+    color: white;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Ensure it takes the full height of the #welcome container */
+}
+
+#welcome .text-overlay p {
+    margin: 0;
+    font-size: 90px;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+
+img {
+	max-width: 100%;
+	height: auto;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+/* Main CSS *//* Main CSS */
+.grid-wrapper > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for transform and shadow */
+}
+
+.grid-wrapper > div:hover {
+    transform: scale(1.005); /* Slight zoom-in effect */
+}
+
+.grid-wrapper > div > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease; /* Smooth transition for opacity */
+}
+
+.grid-wrapper > div:hover > img {
+    opacity: 0.9999; /* Slightly reduce opacity on hover */
+}
+
+.grid-wrapper {
+    display: grid;
+    grid-gap: 1px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-auto-rows: 11.21pc;
+    grid-auto-flow: dense;
+}
+
+.grid-wrapper .wide {
+    grid-column: span 2;
+}
+
+.grid-wrapper .tall {
+    grid-row: span 3;
+}
+
+.grid-wrapper .big {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+/* Overlay and text */
+.overlay-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Black overlay layer */
+.overlay-container .black-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black color with 50% opacity */
+    z-index: 2;
+    
+}
+
+/* Centering text in the middle of the overlay */
+.text-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    box-sizing: border-box;
+    z-index: 2; /* Ensure the text appears above the black overlay */
+}
+
+.text-overlay p {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 400;
+    transition: color 0.3s ease; /* Smooth transition for text color */
+}
+
+a p {
+    color: white;
+    text-decoration: none;
+}
+
+a p:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+
+/* Media Queries */
+
+/* For tablets and below */
+/* Media Queries */
+
+/* For tablets and below */
+@media (max-width: 768px) {
+    
+
+    #welcome .text-overlay p {
+        font-size: 30px;
+    }
+
+    #welcome {
+        margin-bottom: 3pc;
+        margin-top: 2pc;
+    }
+    .grid-wrapper {
+        grid-template-columns: 1fr; /* Single column layout */
+        grid-auto-rows: auto; /* Automatic row height */
+    }
+
+    .grid-wrapper .wide, 
+    .grid-wrapper .big, 
+    .grid-wrapper .tall {
+        grid-column: span 1 !important; /* Ensure each tile takes up one column */
+        grid-row: span 1 !important; /* Ensure each tile takes up one row */
+        height: auto; /* Let the height adjust automatically */
+        width: 100%; /* Ensure full width */
+    }
+}
+
+/* For mobile phones and below */
+@media (max-width: 480px) {
+    .grid-wrapper {
+        grid-template-columns: 1fr; /* Single column layout */
+        grid-auto-rows: auto; /* Automatic row height */
+    }
+
+    .grid-wrapper .wide, 
+    .grid-wrapper .big, 
+    .grid-wrapper .tall {
+        grid-column: span 1 !important; /* Ensure each tile takes up one column */
+        grid-row: span 1 !important; /* Ensure each tile takes up one row */
+        height: auto; /* Let the height adjust automatically */
+        width: 100%; /* Ensure full width */
+    }
+}
+
+
+
+
+
+</style>
+
+
+<div class="grid-wrapper">
+	<div class="big" id="welcome">
+        <div class="overlay-container">
+
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <p>Welcome.</p>
+            </div>
+        </div>
+    </div>
+    <div class="tall">
+        <div class="overlay-container">
+            <a href="{% url 'category_page' 'Liverpool FC' %}">
+                <img src="https://d3j2s6hdd6a7rg.cloudfront.net/v2/uploads/media/default/0002/08/933b84a6faaed0980f159a386eade8e7f723b025.jpeg" alt="{{ liv.0.title }}">
+            </a>
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <a href="{% url 'category_page' 'Liverpool FC' %}">
+                    <p> Liverpool FC</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="wide">
+        <div class="overlay-container">
+            <a href="{% url 'category_page' 'Formula 1' %}">
+                <img src="https://img.redbull.com/images/c_limit,w_1500,h_1000,f_auto,q_auto/redbullcom/2022/11/17/fxovrha8k0pvjysi3ltc/raining-gold" alt="{{ f1.0.title }}" />
+            </a>
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <a href="{% url 'category_page' 'Formula 1' %}">
+                    <p>F1</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="overlay-container">
+            <a href="{% url 'category_page' 'Football' %}">
+                <img src="https://www.fcbarcelona.com/fcbarcelona/photo/2022/08/02/ae5252d1-b79b-4950-9e34-6e67fac09bb0/LeoMessi20092010_pic_fcb-arsenal62.jpg" alt="{{ football.0.title }}" />
+            </a>
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <a href="{% url 'category_page' 'Football' %}">
+                    <p>Football</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="tall">
+        <div class="overlay-container">
+            <a href="{% url 'category_page' 'Global News' %}">
+                <img src="https://static01.nyt.com/images/2024/08/21/multimedia/21election-live-wgbf/21election-live-wgbf-superJumbo.jpg?quality=75&auto=webp" alt="{{ news.7.title }}" />
+            </a>
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <a href="{% url 'category_page' 'Global News' %}">
+                    <p>Global News</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="wide">
+        <div class="overlay-container">
+            <a href="{% url 'category_page' 'Pakistan' %}">
+                <img src="https://t4.ftcdn.net/jpg/05/81/62/43/360_F_581624354_jSvAOYRDCXyKfj8klz66T3u5u8UrOaiH.jpg" alt="{{ pak.0.title }}" />
+            </a>
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <a href="{% url 'category_page' 'Pakistan' %}">
+                    <p>Pakistan</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="wide">
+        <div class="overlay-container">
+            <a href="{% url 'category_page' 'Travel' %}">
+                <img src="https://www.forbes.com/advisor/wp-content/uploads/2021/03/traveling-based-on-fare-deals-900x510.jpg" alt="{{ f1.1.title }}" />
+            </a>
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <a href="{% url 'category_page' 'Travel' %}">
+                    <p>Travel</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="wide">
+        <div class="overlay-container">
+            <a href="{% url 'category_page' 'Science & Technology' %}">
+                <img src="https://i.redd.it/vtxj2nm2dye31.jpg" alt="{{ f1.0.title }}" />
+            </a>
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <a href="{% url 'category_page' 'Science & Technology' %}">
+                    <p>Science & Technology</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="overlay-container">
+            <a href="{% url 'category_page' 'Self Dev' %}">
+                <img src="https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg" alt="{{ selfdev.0.title }}" />
+
+            </a>
+            <div class="black-overlay"></div> <div class="text-overlay">
+                <a href="{% url 'category_page' 'Self Dev' %}">
+                    <p>Self Development</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+	
+	
+	
+</div>
+{% endblock %}
+
+
+

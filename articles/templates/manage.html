@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}
+Welcome to My Django Site
+{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #ffffff;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        #log {
+            border: 1px solid #000000;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            background-color: #000000;
+            color: white;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        #progressBarContainer {
+            width: 100%;
+            background-color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        #progressBar {
+            width: 0%;
+            height: 20px;
+            background-color: #343434;
+        }
+    </style>
+
+    <body>
+        <h1>Manage Page</h1>
+
+        
+        <form id="manageForm">
+            <button id="updateButton" type="button">Update Database</button>
+        </form>
+        
+        <div id="progressBarContainer">
+            <div id="progressBar"></div>
+        </div>
+
+        <div id="log"></div>
+
+        <script>
+            document.getElementById('updateButton').addEventListener('click', function() {
+                const logContainer = document.getElementById('log');
+                const progressBar = document.getElementById('progressBar');
+                logContainer.innerHTML = '';  // Clear previous logs
+
+                const eventSource = new EventSource('/sse-updates/');
+                
+                eventSource.onmessage = function(event) {
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.textContent = event.data;
+                    logContainer.appendChild(logEntry);
+                    logContainer.scrollTop = logContainer.scrollHeight;  // Auto-scroll to the latest log entry
+
+                    // Update the progress bar
+                    if (event.data.includes("Progress")) {
+                        const progressMatch = event.data.match(/Progress:\s(\d+\.\d+)%/);
+                        if (progressMatch) {
+                            progressBar.style.width = `${progressMatch[1]}%`;
+                        }
+                    }
+                };
+
+                eventSource.onerror = function() {
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.textContent = 'Error occurred in the SSE connection.';
+                    logContainer.appendChild(logEntry);
+                    eventSource.close();
+                };
+            });
+        </script>
+    </body>
+{% endblock %}

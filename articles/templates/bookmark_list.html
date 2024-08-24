@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+{% load bookmark_tags %}
+
+{% block title %}
+My Bookmarks
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Include the same styles from your article pages */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+        vertical-align: middle;
+        display: inline-block;
+    }
+
+    /* Main CSS */
+    .grid-wrapper > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease-in-out;
+        opacity: 1;
+    }
+
+
+    .grid-wrapper > div > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .grid-wrapper {
+        display: grid;
+        grid-gap: 1px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-auto-rows: 11.21pc;
+        grid-auto-flow: dense;
+    }
+    .grid-wrapper .wide {
+        grid-column: span 2;
+    }
+    .grid-wrapper .tall {
+        grid-row: span 2;
+    }
+    .grid-wrapper .big {
+        grid-column: span 2;
+        grid-row: span 2;
+    }
+
+    .article-number {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: white;
+        padding: 5px 10px;
+        font-size: 2pc;
+        font-weight: bold;
+        z-index: 10;
+    }
+
+    .bookmark-button {
+        position: absolute;
+        top: 20px;
+        right: 10px;
+        color: white;
+        padding: 5px 10px;
+        font-size: 1pc;
+        font-weight: bold;
+        z-index: 10;
+
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .bookmark-button[data-bookmarked="false"] {
+        background-image: url('https://cdn-icons-png.flaticon.com/512/892/892337.png');
+    }
+
+    .bookmark-button[data-bookmarked="true"] {
+        background-image: url('https://www.freeiconspng.com/uploads/bookmarks-icon-27.png');
+    }
+
+    .bookmark-button:hover {
+        transform: scale(1.1);
+    }
+
+    .overlay-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .overlay-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .text-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        text-align: center;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .text-overlay p {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .text-overlay .meta-info {
+        font-size: 12px;
+        margin-top: 5px;
+        color: #ccc;
+    }
+
+    .modal {
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        visibility: hidden;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.8);
+        padding-top: 60px;
+    }
+
+    .modal.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .modal-content {
+        margin: 5% auto;
+        padding: 20px;
+        width: 50%;
+        max-width: 90%;
+        background-color: #000000;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transform: translateY(-50px);
+        transition: transform 0.4s ease;
+    }
+
+    .modal.show .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal a {
+        text-decoration: none;
+    }
+
+    .modal-content img {
+        width: 100%;
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+
+    .modal-content h2 {
+        font-size: 20px;
+        margin-top: 20px;
+        font-weight: bold;
+        text-align: center;
+        color: white;
+    }
+
+    .modal-content p {
+        font-size: 14px;
+        margin-top: 10px;
+        line-height: 1.5;
+        text-align: center;
+        max-height: 150px;
+        overflow-y: auto;
+        color: white;
+    }
+
+    /* Media Queries */
+
+    @media (max-width: 768px) {
+        .grid-wrapper {
+            grid-template-columns: 1fr;
+            grid-auto-rows: auto;
+        }
+
+        .grid-wrapper .wide,
+        .grid-wrapper .big,
+        .grid-wrapper .tall {
+            grid-column: span 1 !important;
+            grid-row: span 1 !important;
+            height: auto;
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .grid-wrapper {
+            grid-template-columns: 1fr;
+            grid-auto-rows: auto;
+        }
+
+        .grid-wrapper .wide,
+        .grid-wrapper .big,
+        .grid-wrapper .tall {
+            grid-column: span 1 !important;
+            grid-row: span 1 !important;
+            height: auto;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="grid-wrapper">
+    {% if bookmarks %}
+        {% for bookmark in bookmarks %}
+        {% if forloop.counter0|divisibleby:12 %}
+        <!-- Start a new set of divs every 12 articles -->
+        </div><div class="grid-wrapper">
+        {% endif %}
+    
+        {% if forloop.counter0|divisibleby:12 or forloop.counter0|divisibleby:2 %}
+            <div class="tall" id="article-{{ forloop.counter }}" onclick="openModal('{{ bookmark.article.image }}', '{{ bookmark.article.title|escapejs }}', '{{ bookmark.article.summary|escapejs }}', '{{ bookmark.article.link|escapejs }}')">
+                <div class="overlay-container">
+                    <div class="article-number">{{ forloop.counter }}</div>
+                    {% if user.is_authenticated %}
+                    <button 
+                        class="bookmark-button" 
+                        data-article-id="{{ bookmark.article.id }}"
+                        {% if bookmark.article|is_bookmarked:user %}
+                            data-bookmarked="true"
+                        {% else %}
+                            data-bookmarked="false"
+                        {% endif %}
+                        onclick="event.stopPropagation(); unbookmarkArticle(this)"
+                    >
+                    </button>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-secondary">Login to Bookmark</a>
+                    {% endif %}
+                    <img src="{{ bookmark.article.image }}" alt="{{ bookmark.article.title }}">
+                    <div class="text-overlay">
+                        <p>{{ bookmark.article.title }}</p>
+                        <div class="meta-info">
+                            {{ bookmark.article.website }} - {{ bookmark.article.published }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% elif forloop.counter0|divisibleby:3 %}
+            <div class="wide" id="article-{{ forloop.counter }}" onclick="openModal('{{ bookmark.article.image }}', '{{ bookmark.article.title|escapejs }}', '{{ bookmark.article.summary|escapejs }}', '{{ bookmark.article.link|escapejs }}')">
+                <div class="overlay-container">
+                    <div class="article-number">{{ forloop.counter }}</div>
+                    {% if user.is_authenticated %}
+                    <button 
+                        class="bookmark-button" 
+                        data-article-id="{{ bookmark.article.id }}"
+                        {% if bookmark.article|is_bookmarked:user %}
+                            data-bookmarked="true"
+                        {% else %}
+                            data-bookmarked="false"
+                        {% endif %}
+                        onclick="event.stopPropagation(); unbookmarkArticle(this)"
+                    >
+                    </button>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-secondary">Login to Bookmark</a>
+                    {% endif %}
+                    <img src="{{ bookmark.article.image }}" alt="{{ bookmark.article.title }}">
+                    <div class="text-overlay">
+                        <p>{{ bookmark.article.title }}</p>
+                        <div class="meta-info">
+                            {{ bookmark.article.website }} - {{ bookmark.article.published }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% elif forloop.counter0|divisibleby:5 %}
+            <div class="big" id="article-{{ forloop.counter }}" onclick="openModal('{{ bookmark.article.image }}', '{{ bookmark.article.title|escapejs }}', '{{ bookmark.article.summary|escapejs }}', '{{ bookmark.article.link|escapejs }}')">
+                <div class="overlay-container">
+                    <div class="article-number">{{ forloop.counter }}</div>
+                    {% if user.is_authenticated %}
+                    <button 
+                        class="bookmark-button" 
+                        data-article-id="{{ bookmark.article.id }}"
+                        {% if bookmark.article|is_bookmarked:user %}
+                            data-bookmarked="true"
+                        {% else %}
+                            data-bookmarked="false"
+                        {% endif %}
+                        onclick="event.stopPropagation(); unbookmarkArticle(this)"
+                    >
+                    </button>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-secondary">Login to Bookmark</a>
+                    {% endif %}
+                    <img src="{{ bookmark.article.image }}" alt="{{ bookmark.article.title }}">
+                    <div class="text-overlay">
+                        <p>{{ bookmark.article.title }}</p>
+                        <div class="meta-info">
+                            {{ bookmark.article.website }} - {{ bookmark.article.published }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div onclick="openModal('{{ bookmark.article.image }}', '{{ bookmark.article.title|escapejs }}', '{{ bookmark.article.summary|escapejs }}', '{{ bookmark.article.link|escapejs }}')">
+                <div class="overlay-container" id="article-{{ forloop.counter }}">
+                    <div class="article-number">{{ forloop.counter }}</div>
+                    {% if user.is_authenticated %}
+                    <button 
+                        class="bookmark-button" 
+                        data-article-id="{{ bookmark.article.id }}"
+                        {% if bookmark.article|is_bookmarked:user %}
+                            data-bookmarked="true"
+                        {% else %}
+                            data-bookmarked="false"
+                        {% endif %}
+                        onclick="event.stopPropagation(); unbookmarkArticle(this)"
+                    >
+                    </button>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-secondary">Login to Bookmark</a>
+                    {% endif %}
+                    <img src="{{ bookmark.article.image }}" alt="{{ bookmark.article.title }}">
+                    <div class="text-overlay">
+                        <p>{{ bookmark.article.title }}</p>
+                        <div class="meta-info">
+                            {{ bookmark.article.website }} - {{ bookmark.article.published }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    
+        {% endfor %}
+    {% else %}
+        <p>You have no bookmarks yet.</p>
+    {% endif %}
+</div>
+
+
+<div id="articleModal" class="modal">
+    <div class="modal-content">
+        <a id="modalLink" href="" target="_blank"><img id="modalImage" src="" alt="Article Image"></a>
+        <a id="modalLinkTitle" href="" target="_blank"><h2 id="modalTitle"></h2></a>
+        <p id="modalSummary"></p>
+    </div>
+</div>
+
+<script>
+    function unbookmarkArticle(button) {
+    const articleId = button.getAttribute('data-article-id');
+    const isBookmarked = button.getAttribute('data-bookmarked') === 'true';
+    const action = isBookmarked ? 'remove' : 'add';
+
+    // Fade out the button to indicate the action is happening
+    button.style.opacity = '0';
+
+    fetch('{% url "bookmark_article" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',  // Django's CSRF token
+        },
+        body: JSON.stringify({
+            'article_id': articleId,
+            'action': action,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Remove the article with a smooth transition
+            if (action === 'remove') {
+                const gridItem = button.closest('.overlay-container').parentElement;
+                gridItem.style.opacity = '0';  // Start fading out
+
+                // Wait for the transition to end before removing the element
+                setTimeout(() => {
+                    gridItem.remove();
+                    // Force the grid to reflow
+                    document.querySelector('.grid-wrapper').dispatchEvent(new Event('resize'));
+                }, 300);  // Duration should match the CSS transition time
+            } else {
+                // Handle the bookmark case if needed, e.g., changing the button icon or state
+                button.setAttribute('data-bookmarked', !isBookmarked);
+                button.style.backgroundImage = "url('https://www.freeiconspng.com/uploads/bookmarks-icon-27.png')";
+                button.style.opacity = '1';  // Fade back in the button
+            }
+        } else {
+            // Handle any errors (optional)
+            alert('An error occurred while updating your bookmark.');
+            button.style.opacity = '1';  // Revert fade if error occurs
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating your bookmark.');
+        button.style.opacity = '1';  // Revert fade if error occurs
+    });
+}
+
+    
+    function openModal(imageSrc, title, summary, link) {
+        const modal = document.getElementById("articleModal");
+
+        document.getElementById("modalImage").src = imageSrc;
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalSummary").textContent = summary;
+
+        document.getElementById("modalLink").href = link;
+        document.getElementById("modalLinkTitle").href = link;
+        
+        modal.style.display = "block";
+        setTimeout(() => {
+            modal.classList.add("show");
+        }, 10);
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("articleModal");
+        modal.classList.remove("show");
+        
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 400);
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById("articleModal");
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
+{% endblock %}
