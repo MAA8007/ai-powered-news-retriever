@@ -11,4 +11,6 @@ beautifulsoup4>=4.9.0
 langchain_core
 langchain_openai
 langchain_google_genai
+langchain_groq
+groq
 
