@@ -6,6 +6,8 @@
 
 This project is a comprehensive system designed to fetch, process, and store articles from various RSS feeds, focusing on news related to AI, business, technology, and other categories. The system leverages cutting-edge technologies and APIs to automate the retrieval, summarization, and storage of article data in a Django-based backend for efficient querying and retrieval.
 
+Check it out by clicking on this link: [https://ai-powered-news-retriever.onrender.com/](https://ai-powered-news-retriever.onrender.com/)
+
 ## Key Features
 
 1. **RSS Feed Integration**:
