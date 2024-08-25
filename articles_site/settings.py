@@ -26,7 +26,12 @@ SECRET_KEY = 'django-insecure-sw=g3(8mu^j(*6ik&^_ggjzck$f%@qn$_02axae^!&o_4ahj9q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'ai-powered-news-retriever.onrender.com',  # Add your Render.com URL
+    '127.0.0.1',  # Localhost for local development
+    'localhost',  # Localhost for local development
+]
+
 
 
 # Application definition
