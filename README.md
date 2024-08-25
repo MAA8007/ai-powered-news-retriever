@@ -1,5 +1,7 @@
 # AI powered News Aggregator
 
+![Project Screenshot](screen.png)
+
 ## Project Overview
 
 This project is a comprehensive system designed to fetch, process, and store articles from various RSS feeds, focusing on news related to AI, business, technology, and other categories. The system leverages cutting-edge technologies and APIs to automate the retrieval, summarization, and storage of article data in a Django-based backend for efficient querying and retrieval.
@@ -15,10 +17,14 @@ This project is a comprehensive system designed to fetch, process, and store art
     - Summarizes article content using advanced yet cost-effective language models like OpenAI's GPT and Groq's Llama models.
     - Extracts full-text content from articles to create concise summaries while preserving the core message.
     
+![Project Screenshot](article.png)
+
 3. **Retrieval-Augmented Generation (RAG)**:
     - Utilizes a FAISS-based vector store for efficient similarity search through document embeddings.
     - Offers a robust search interface where users can query the database and receive relevant answers based on stored articles.
     - Employs custom prompts and language models to generate concise and accurate responses to user queries.
+
+![GPT-4o-mini Chatbot](chatbot.png)
 
 4. **Concurrency and Performance**:
     - Utilizes Python's `concurrent.futures` and `ThreadPoolExecutor` to parallelize feed fetching and content processing, improving performance and scalability.
@@ -27,6 +33,9 @@ This project is a comprehensive system designed to fetch, process, and store art
 5. **Extensibility**:
     - Easily expandable with additional RSS feeds, categories, or language models.
     - Designed with modularity in mind, allowing for easy integration of new features and updates.
+
+6. **Bookmarking Functionality**:
+    - Allows user to bookmark their favourite articles for convenient access at a later time. 
 
 ## Technologies Used
 
