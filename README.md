@@ -14,14 +14,14 @@ This project is a comprehensive system designed to fetch, process, and store art
     - Categorizes articles into predefined categories like AI News, Business & Finance, Science & Technology, etc.
 
 2. **Content Processing**:
+    - Extracts content from articles using Jina AI to create concise summaries while preserving the core message.
     - Summarizes article content using advanced yet cost-effective language models like OpenAI's GPT and Groq's Llama models.
-    - Extracts full-text content from articles to create concise summaries while preserving the core message.
     
 ![Project Screenshot](article.png)
 
 3. **Retrieval-Augmented Generation (RAG)**:
     - Utilizes a FAISS-based vector store for efficient similarity search through document embeddings.
-    - Offers a robust search interface where users can query the database and receive relevant answers based on stored articles.
+    - Offers a chatbot interface where users can query the database and receive relevant answers based on stored articles.
     - Employs custom prompts and language models to generate concise and accurate responses to user queries.
 
 ![GPT-4o-mini Chatbot](chatbot.png)
